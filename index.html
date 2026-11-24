@@ -320,6 +320,7 @@ try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S){try{const o=JSON.parse(localStorage.getItem(OLD));if(o&&Array.isArray(o.tasks)&&!o.sample){const n=now();S={v:2,tasks:o.tasks.map(t=>({...t,c:t.c||n,u:n,doneAt:t.done?n:null})),log:(o.log||[]).map(l=>({...l,tid:l.tid||''})),del:{},active:o.active||null,au:n,name:'إبراهيم',nu:0}}}catch(e){}}
 if(!S||!Array.isArray(S.tasks))S=sample();
 S.log=S.log||[];S.del=S.del||{};
+if(!S.sample)S.log=S.log.filter(l=>l.id!=='l1'&&l.id!=='l2');
 let cfg={};try{cfg=JSON.parse(localStorage.getItem(CFG))||{}}catch(e){}
 const saveCfg=()=>{try{localStorage.setItem(CFG,JSON.stringify(cfg))}catch(e){}};
 
