@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2445ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="مهامي">
+<title>مهام بالتايمر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday work tool, calm and premium
+   IDEA a chronograph on a desk: one big dial for the task in hand, a ruled list of what's next
+   PICTURE the focus ring at the top, filling as the active task eats its estimate, coral when over
+   COLOUR cobalt band #2445ff, white ground, ink #0e1020, coral #ff5a3c for running/over; night #0b0e22
+   TYPE Readex Pro throughout, weights do the contrast
+   LAYOUT laptop: cobalt band with dial + task controls + stats, list below; phone: stacked dial, controls, list */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0b0e22);--ink:light-dark(#0e1020,#eef0ff);--mute:light-dark(#5b6080,#9aa0c8);--line:light-dark(#e6e8f2,#22274a);--card:light-dark(#f6f7fc,#12163a);--blue:#2445ff;--blueD:light-dark(#1a33c9,#3a57ff);--coral:#ff5a3c;--ok:light-dark(#0f9d6a,#3fd49a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Readex Pro",Tahoma,sans-serif;overflow-x:clip}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.dial .mid,.dial svg{pointer-events:none}
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.band{padding:clamp(22px,4vw,48px) max(5vw,16px)}
+.wrap{max-width:1180px;margin:0 auto}
+.top{background:var(--blue);color:#fff}
+.hd{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:clamp(30px,4.4vw,44px);line-height:1.05;letter-spacing:-.02em;margin:0;font-weight:700}
+.date{opacity:.85;font-size:15px}
+.hero{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.dial{position:relative;aspect-ratio:1;width:100%;max-width:340px;margin-inline:auto}
+.dial svg{position:absolute;inset:0;width:100%;height:100%}
+.ringbg{stroke:rgba(255,255,255,.18)}
+.ring{stroke:#fff;transition:stroke-dashoffset .9s linear,stroke .3s}
+.ring.over{stroke:var(--coral)}
+.tick{stroke:rgba(255,255,255,.45)}
+.mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:2px}
+.big{font-size:clamp(44px,8vw,64px);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;direction:ltr}
+.sub{font-size:14px;opacity:.85}
+.pulse{animation:p 2s ease-in-out infinite}
+@keyframes p{50%{opacity:.55}}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none}.ring{transition:none}}
+.now{display:grid;gap:16px}
+.lbl{font-size:14px;opacity:.85}
+.ntitle{font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;margin:2px 0 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:13px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.16)}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap}
+.btn{min-height:46px;padding:0 18px;border-radius:12px;border:0;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn svg{width:18px;height:18px}
+.wb{background:#fff;color:var(--blue)}
+.wb.run{background:var(--coral);color:#fff}
+.gb{background:rgba(255,255,255,.16);color:#fff}
+.gb:hover{background:rgba(255,255,255,.26)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.22);border-radius:14px;overflow:hidden}
+.stats div{background:var(--blueD);padding:12px 14px}
+.stats b{display:block;font-size:22px;font-weight:600;white-space:nowrap;direction:ltr;text-align:right}
+.stats span{font-size:13px;opacity:.85}
+.bar{height:6px;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden}
+.bar i{display:block;height:100%;background:#fff;border-radius:9px;transition:width .4s}
+form{display:grid;grid-template-columns:minmax(0,1fr) 150px 110px 120px auto;gap:10px;margin-bottom:18px}
+.f{display:grid;gap:4px}
+.f label{font-size:13px;color:var(--mute)}
+input,select{height:46px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);padding:0 12px;font-size:16px;width:100%}
+input:focus,select:focus{border-color:var(--blue);outline:0}
+.add{align-self:end;background:var(--blue);color:#fff}
+.bar2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.tabs{display:flex;gap:4px;background:var(--card);padding:4px;border-radius:12px}
+.tabs button{border:0;background:none;min-height:38px;padding:0 14px;border-radius:9px;font-size:15px;color:var(--mute)}
+.tabs button[aria-pressed=true]{background:var(--bg);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.link{border:0;background:none;color:var(--mute);font-size:14px;min-height:44px;text-decoration:underline;text-underline-offset:3px}
+.note{font-size:13px;color:var(--mute);margin:0 0 8px}
+ul{list-style:none;margin:0;padding:0}
+li{display:grid;grid-template-columns:44px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line)}
+li.act{background:color-mix(in srgb,var(--blue) 7%,transparent);border-radius:12px;border-color:transparent;padding-inline:10px}
+.ck{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:none;display:grid;place-items:center;margin:auto}
+.ck svg{width:16px;height:16px;opacity:0}
+li.done .ck{background:var(--ok);border-color:var(--ok);color:#fff}
+li.done .ck svg{opacity:1}
+.fb{border:0;background:none;padding:0;text-align:start;width:100%;display:block}
+.tt{font-weight:500;overflow-wrap:anywhere}
+li.done .tt{text-decoration:line-through;color:var(--mute)}
+.meta{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mute);flex-wrap:wrap;margin-top:2px}
+.pr{width:8px;height:8px;border-radius:50%;display:inline-block}
+.p3{background:var(--coral)}.p2{background:var(--blue)}.p1{background:var(--line)}
+.tm{font-variant-numeric:tabular-nums;white-space:nowrap;direction:ltr;font-size:15px;text-align:left}
+.tm.over{color:var(--coral);font-weight:600}
+.mini{height:4px;border-radius:9px;background:var(--line);margin-top:6px;overflow:hidden;width:100%;min-width:70px}
+.mini i{display:block;height:100%;background:var(--blue)}
+.mini i.over{background:var(--coral)}
+.acts{display:flex;gap:4px}
+.ib{width:44px;height:44px;border-radius:12px;border:0;background:var(--card);display:grid;place-items:center;color:var(--ink)}
+.ib svg{width:18px;height:18px}
+.ib.run{background:var(--coral);color:#fff}
+.ib.ghost{background:none;color:var(--mute)}
+.empty{padding:40px 10px;text-align:center;color:var(--mute)}
+.toast{position:fixed;inset-inline:16px;bottom:16px;margin:auto;max-width:420px;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 10px 10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;transform:translateY(140%);transition:transform .25s}
+.toast.on{transform:none}
+.toast button{border:0;background:var(--coral);color:#fff;border-radius:10px;min-height:40px;padding:0 14px;font-weight:600}
+.sync{font-size:13px;opacity:.8}
+.ltools{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
+.sb{background:var(--card);color:var(--ink);font-weight:500;font-size:15px;cursor:pointer}
+.day{margin-bottom:22px}
+.dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.dh h3{margin:0;font-size:20px;font-weight:600}
+.dh b{font-variant-numeric:tabular-nums;direction:ltr}
+.tg{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tg span{font-size:13px;background:var(--card);border-radius:99px;padding:3px 10px}
+.le{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.le .tr{font-size:14px;color:var(--mute);white-space:nowrap;direction:ltr;font-variant-numeric:tabular-nums}
+.le .du{font-variant-numeric:tabular-nums;white-space:nowrap;direction:ltr;font-weight:500}
+@media(max-width:860px){form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.f.wide{grid-column:1/-1}.add{grid-column:1/-1}}
+@media(max-width:600px){.hero{grid-template-columns:minmax(0,1fr)}.dial{max-width:250px}.stats b{font-size:18px}li{grid-template-columns:38px minmax(0,1fr) auto;row-gap:6px}.acts{grid-column:2/-1;justify-content:flex-start}.ib{width:42px;height:42px}}
+</style>
+<script>
+window.__errs=[];
+function __show(m){window.__errs.push(m);var go=function(){var n=document.getElementById('err');if(n){n.hidden=false;n.textContent='خطأ: '+m}};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()}
+window.addEventListener('error',function(e){__show((e.message||'error')+' @'+(e.lineno||''))});
+setTimeout(function(){if(!window.__ok)__show('السكريبت مش اشتغل')},3000);
+</script>
+</head>
+<body>
+<section class="band top">
+ <div class="wrap">
+  <div class="hd"><h1>مهام النهارده</h1><span class="date" id="date"></span></div>
+  <div class="hero">
+   <div class="dial">
+    <svg viewBox="0 0 200 200" aria-hidden="true"><g id="ticks"></g>
+     <circle class="ringbg" cx="100" cy="100" r="84" fill="none" stroke-width="10"/>
+     <circle class="ring" id="ring" cx="100" cy="100" r="84" fill="none" stroke-width="10" stroke-linecap="round" transform="rotate(-90 100 100)"/>
+    </svg>
+    <div class="mid"><div class="big" id="clock">00:00</div><div class="sub" id="clocksub">من غير تقدير</div></div>
+   </div>
+   <div class="now">
+    <div><div class="lbl" id="nowlbl">شغال دلوقتي</div><p class="ntitle" id="ntitle">—</p></div>
+    <div class="chips" id="nchips"></div>
+    <div class="ctrl">
+     <button class="btn wb" id="bPlay"></button>
+     <button class="btn gb" id="bPlus">+5 دقايق للتقدير</button>
+     <button class="btn gb" id="bDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>خلصت</button>
+     <button class="btn gb" id="bReset">صفّر الوقت</button>
+    </div>
+    <div class="stats">
+     <div><b id="sFocus">0:00</b><span>وقت تركيز النهارده</span></div>
+     <div><b id="sDone">0/0</b><span>مهام خلصت</span></div>
+     <div><b id="sLeft">0د</b><span>باقي (تقديري)</span></div>
+    </div>
+    <div class="bar"><i id="dayBar" style="width:0"></i></div>
+    <div class="sync" id="err" hidden style="background:#ff5a3c;color:#fff;padding:6px 10px;border-radius:8px"></div>
+    <div class="sync" id="sync">بيتحفظ على الجهاز ده تلقائي</div>
+   </div>
+  </div>
+ </div>
+</section>
+<section class="band">
+ <div class="wrap">
+  <form id="form" autocomplete="off">
+   <div class="f wide"><label for="fT">المهمة</label><input id="fT" placeholder="اكتب المهمة واضغط إضافة" required maxlength="140"></div>
+   <div class="f"><label for="fTag">التصنيف</label><input id="fTag" list="tags" placeholder="مثلاً Ninja" maxlength="30"><datalist id="tags"></datalist></div>
+   <div class="f"><label for="fEst">التقدير (دقيقة)</label><input id="fEst" type="number" min="0" max="600" step="5" value="30" inputmode="numeric"></div>
+   <div class="f"><label for="fPr">الأولوية</label><select id="fPr"><option value="3">عالية</option><option value="2" selected>متوسطة</option><option value="1">عادية</option></select></div>
+   <button class="btn add" id="fBtn" type="submit">إضافة</button>
+  </form>
+  <div class="bar2">
+   <div class="tabs" role="group" aria-label="فلتر">
+    <button data-f="open" aria-pressed="true">الجاية</button><button data-f="all" aria-pressed="false">الكل</button><button data-f="done" aria-pressed="false">خلصت</button><button data-f="log" aria-pressed="false">السجل</button>
+   </div>
+   <button class="link" id="clearDone">امسح اللي خلص</button>
+  </div>
+  <p class="note" id="sample" hidden>دي مهام مثال عشان تشوف الشكل. <button class="link" id="clearSample" style="min-height:auto">امسحها وابدأ</button></p>
+  <ul id="list"></ul>
+  <div id="logv" hidden>
+   <div class="ltools"><button class="btn sb" id="csv">نزّل السجل Excel (CSV)</button><button class="btn sb" id="bak">نسخة احتياطية</button><label class="btn sb" for="imp">استرجاع نسخة</label><input type="file" id="imp" accept=".json,application/json" hidden></div>
+   <div id="logl"></div>
+  </div>
+ </div>
+</section>
+<div class="toast" id="toast" role="status"><span id="tmsg"></span><button id="tundo">تراجع</button></div>
+<script>
+window.addEventListener('unhandledrejection',e=>{e.preventDefault&&e.preventDefault()});
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KEY='ebr-tasks-v1';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const M=60000;
+const SAMPLE=()=>({sample:true,upd:0,active:'a1',tasks:[
+ {id:'a1',t:'مراجعة أداء حملات Ninja وقفل الإعلانات الخسرانة',tag:'Ninja',est:45,pri:3,done:false,spent:18*M,run:null},
+ {id:'a2',t:'كتابة 3 هوكات جديدة لكرييتيف التيشيرت',tag:'TAXIS',est:30,pri:3,done:false,spent:0,run:null},
+ {id:'a3',t:'تحديث شيت الـ COGS والتوقعات',tag:'Hodix',est:40,pri:2,done:false,spent:0,run:null},
+ {id:'a4',t:'رسائل DM لـ 10 براندات',tag:'شخصي',est:25,pri:2,done:false,spent:0,run:null},
+ {id:'a5',t:'مراجعة صفحة المنتج على Shopify',tag:'RVN',est:20,pri:1,done:true,spent:22*M,run:null}],log:(()=>{const n=Date.now();return[{id:'l1',t:'مراجعة صفحة المنتج على Shopify',tag:'RVN',s:n-95*M,e:n-73*M},{id:'l2',t:'مراجعة أداء حملات Ninja وقفل الإعلانات الخسرانة',tag:'Ninja',s:n-60*M,e:n-42*M}]})()});
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!Array.isArray(S.tasks))S=SAMPLE();if(!Array.isArray(S.log))S.log=[];
+let filter='open',editId=null,undo=null,db=null,docRef=null,saveT=null,toastT=null;
+const el=t=>t.spent+(t.run?Date.now()-t.run:0);
+const fmt=ms=>{const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;const p=n=>String(n).padStart(2,'0');return h?h+':'+p(m)+':'+p(x):p(m)+':'+p(x)};
+const fmtM=min=>min>=60?Math.floor(min/60)+'س '+(min%60?min%60+'د':''):min+'د';
+const get=id=>S.tasks.find(t=>t.id===id);
+const running=()=>S.tasks.find(t=>t.run);
+function save(){
+ S.upd=Date.now();
+ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+ if(docRef){clearTimeout(saveT);saveT=setTimeout(()=>{Promise.resolve().then(()=>docRef.set(JSON.parse(JSON.stringify(S)))).then(()=>{$('sync').textContent='متزامن مع حسابك'}).catch(()=>{$('sync').textContent='بيتحفظ على الجهاز ده تلقائي بس'})},700)}
+}
+function commit(){try{save()}catch(e){}render()}
+function logSeg(t,now){if(!S.log)S.log=[];if(now-t.run>=5000)S.log.push({id:uid(),t:t.t,tag:t.tag||'',s:t.run,e:now});if(S.log.length>5000)S.log=S.log.slice(-5000)}
+function stop(t){const now=Date.now();logSeg(t,now);t.spent+=now-t.run;t.run=null}
+function pauseAll(){for(const t of S.tasks)if(t.run)stop(t)}
+function start(id){const t=get(id);if(!t||t.done)return;pauseAll();t.run=Date.now();S.active=id;commit();setTimeout(beepInit,0)}
+function toggle(id){const t=get(id);if(!t)return;if(t.run){pauseAll();commit()}else start(id)}
+function nextOpen(){const o=sorted().filter(t=>!t.done);return o[0]?o[0].id:null}
+function setDone(id,v){const t=get(id);if(!t)return;if(t.run)stop(t);t.done=v;if(v&&S.active===id)S.active=nextOpen();if(!v&&!S.active)S.active=id;commit()}
+function sorted(){return S.tasks.map((t,i)=>[t,i]).sort((a,b)=>(a[0].done-b[0].done)||(b[0].pri-a[0].pri)||(a[1]-b[1])).map(x=>x[0])}
+function toast(msg,fn){$('tmsg').textContent=msg;undo=fn;$('tundo').hidden=!fn;$('toast').classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>$('toast').classList.remove('on'),5000)}
+$('tundo').onclick=()=>{if(undo){undo();undo=null}$('toast').classList.remove('on')};
+function del(id){const prev=JSON.stringify(S);{const x=get(id);if(x&&x.run)stop(x)}S.tasks=S.tasks.filter(t=>t.id!==id);if(S.active===id)S.active=nextOpen();if(editId===id)cancelEdit();commit();toast('اتمسحت المهمة',()=>{S=JSON.parse(prev);commit()})}
+function cancelEdit(){editId=null;$('form').reset();$('fEst').value=30;$('fPr').value=2;$('fBtn').textContent='إضافة'}
+function edit(id){const t=get(id);editId=id;$('fT').value=t.t;$('fTag').value=t.tag||'';$('fEst').value=t.est||0;$('fPr').value=t.pri;$('fBtn').textContent='حفظ التعديل';$('fT').focus();$('form').scrollIntoView({behavior:'smooth',block:'center'})}
+$('form').onsubmit=e=>{e.preventDefault();const t=$('fT').value.trim();if(!t)return;const v={t,tag:$('fTag').value.trim(),est:Math.max(0,parseInt($('fEst').value)||0),pri:+$('fPr').value};
+ if(S.sample){S.sample=false}
+ if(editId){Object.assign(get(editId),v);cancelEdit()}else{const n={id:uid(),...v,done:false,spent:0,run:null};S.tasks.push(n);if(!S.active)S.active=n.id;$('fT').value='';$('fT').focus()}
+ commit()};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{filter=b.dataset.f;document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+$('clearDone').onclick=()=>{const prev=JSON.stringify(S);const n=S.tasks.filter(t=>t.done).length;if(!n)return;S.tasks=S.tasks.filter(t=>!t.done);commit();toast('اتمسح '+n+' مهام',()=>{S=JSON.parse(prev);commit()})};
+$('clearSample').onclick=()=>{const prev=JSON.stringify(S);S={sample:false,upd:0,active:null,tasks:[],log:S.log||[]};commit();toast('اتمسحت الأمثلة',()=>{S=JSON.parse(prev);commit()})};
+$('bPlay').onclick=()=>{if(S.active)toggle(S.active);else{const n=nextOpen();if(n)start(n)}};
+$('bPlus').onclick=()=>{const t=get(S.active);if(!t)return;t.est=(t.est||0)+5;t.alerted=false;commit()};
+$('bDone').onclick=()=>{if(S.active){const id=S.active;setDone(id,true);toast('برافو، خلصت مهمة',()=>setDone(id,false))}};
+$('bReset').onclick=()=>{const t=get(S.active);if(!t)return;const p=[t.spent,t.run];if(t.run)logSeg(t,Date.now());t.spent=0;t.run=t.run?Date.now():null;t.alerted=false;commit();toast('اتصفر الوقت',()=>{t.spent=p[0];t.run=p[1];commit()})};
+$('list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.closest('li').dataset.id,a=b.dataset.a;
+ if(a==='ck'){const t=get(id);setDone(id,!t.done)}else if(a==='play')toggle(id);else if(a==='edit')edit(id);else if(a==='del')del(id);else if(a==='focus'){S.active=id;commit()}};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editId)cancelEdit();if(e.code==='Space'&&!/INPUT|SELECT|BUTTON|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('bPlay').click()}});
+const ic={play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>',pause:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>',edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg>',ck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'};
+{let g='';for(let i=0;i<60;i++){const a=i*6*Math.PI/180,r1=i%5?95:92,r2=98;g+=`<line class="tick" x1="${100+r1*Math.sin(a)}" y1="${100-r1*Math.cos(a)}" x2="${100+r2*Math.sin(a)}" y2="${100-r2*Math.cos(a)}" stroke-width="${i%5?1:2}"/>`}$('ticks').innerHTML=g}
+const C=2*Math.PI*84;$('ring').style.strokeDasharray=C;
+function row(t){const ms=el(t),est=t.est*M,pct=est?Math.min(100,ms/est*100):0,over=est&&ms>est;
+ return `<li data-id="${esc(t.id)}" class="${t.done?'done':''} ${t.id===S.active&&!t.done?'act':''}">
+ <button class="ck" data-a="ck" aria-label="${t.done?'رجّعها':'خلصت'}">${ic.ck}</button>
+ <div><button data-a="focus" class="fb" aria-label="اختار المهمة"><div class="tt">${esc(t.t)}</div>
+ <div class="meta"><span class="pr p${t.pri}"></span>${t.tag?'<span>'+esc(t.tag)+'</span>':''}<span>${t.est?'تقدير '+fmtM(t.est):'من غير تقدير'}</span></div></button></div>
+ <div><div class="tm ${over?'over':''}" data-tm="${esc(t.id)}">${fmt(ms)}</div>${est?`<div class="mini"><i class="${over?'over':''}" data-bar="${esc(t.id)}" style="width:${pct}%"></i></div>`:''}</div>
+ <div class="acts">${t.done?'':`<button class="ib ${t.run?'run':''}" data-a="play" aria-label="${t.run?'وقف':'ابدأ'}">${t.run?ic.pause:ic.play}</button>`}<button class="ib ghost" data-a="edit" aria-label="تعديل">${ic.edit}</button><button class="ib ghost" data-a="del" aria-label="مسح">${ic.del}</button></div></li>`}
+function render(){
+ if(S.active&&!get(S.active))S.active=nextOpen();
+ if(!S.active)S.active=nextOpen();
+ const isLog=filter==='log';$('list').hidden=isLog;$('logv').hidden=!isLog;$('clearDone').hidden=isLog;if(isLog)renderLog();
+ const list=sorted().filter(t=>filter==='all'||(filter==='done'?t.done:!t.done));
+ $('list').innerHTML=list.length?list.map(row).join(''):`<li style="display:block;border:0"><div class="empty">${filter==='done'?'لسه مفيش حاجة خلصت':'مفيش مهام هنا. ضيف أول مهمة من فوق'}</div></li>`;
+ $('sample').hidden=!S.sample;
+ const tags=[...new Set(S.tasks.map(t=>t.tag).filter(Boolean))];$('tags').innerHTML=tags.map(x=>`<option value="${esc(x)}">`).join('');
+ const a=get(S.active);
+ $('ntitle').textContent=a?a.t:'مفيش مهمة مختارة';
+ $('nchips').innerHTML=a?[a.tag,['','عادية','متوسطة','عالية'][a.pri]+' الأولوية',a.est?'تقدير '+fmtM(a.est):''].filter(Boolean).map(x=>`<span class="chip">${esc(x)}</span>`).join(''):'';
+ const r=!!(a&&a.run);
+ $('bPlay').className='btn wb'+(r?' run':'');$('bPlay').innerHTML=(r?ic.pause+'وقف':ic.play+(a&&a.spent?'كمّل':'ابدأ'));
+ $('bPlay').disabled=!a&&!nextOpen();
+ ['bPlus','bDone','bReset'].forEach(i=>$(i).disabled=!a);
+ $('nowlbl').textContent=r?'شغال دلوقتي':'المهمة الحالية';
+ $('clock').classList.toggle('pulse',!!a&&!r&&a.spent>0);
+ tick();
+}
+const dkey=ms=>{const d=new Date(ms);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const hm=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+function allSegs(){const L=(S.log||[]).slice();const now=Date.now();for(const t of S.tasks)if(t.run)L.push({id:'live'+t.id,t:t.t,tag:t.tag||'',s:t.run,e:now,live:1});return L}
+function renderLog(){const L=allSegs().sort((a,b)=>b.s-a.s);if(!L.length){$('logl').innerHTML='<div class="empty">السجل فاضي. شغّل تايمر على أي مهمة وأي وقت هتشتغله هيتسجل هنا</div>';return}
+ const days={};for(const x of L)(days[dkey(x.s)]=days[dkey(x.s)]||[]).push(x);
+ $('logl').innerHTML=Object.keys(days).sort().reverse().slice(0,60).map(k=>{const xs=days[k],tot=xs.reduce((a,x)=>a+x.e-x.s,0),tg={};for(const x of xs){const g=x.tag||'بدون تصنيف';tg[g]=(tg[g]||0)+x.e-x.s}
+  const label=new Date(xs[0].s).toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
+  return `<div class="day"><div class="dh"><h3>${esc(label)}</h3><b>${fmt(tot)}</b></div><div class="tg">${Object.entries(tg).sort((a,b)=>b[1]-a[1]).map(([g,v])=>`<span>${esc(g)} · ${fmt(v)}</span>`).join('')}</div>${xs.map(x=>`<div class="le"><span class="tr">${hm(x.s)}–${x.live?'الآن':hm(x.e)}</span><span>${esc(x.t)}${x.tag?' <small style="color:var(--mute)">· '+esc(x.tag)+'</small>':''}</span><span class="du">${fmt(x.e-x.s)}</span></div>`).join('')}</div>`}).join('')}
+function dl(name,text,type){try{const u=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);toast('اتنزّل الملف',null)}catch(e){try{navigator.clipboard.writeText(text).then(()=>toast('اتنسخ بدل التنزيل',null))}catch(_){}}}
+$('csv').onclick=()=>{const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const rows=[['التاريخ','من','إلى','المهمة','التصنيف','الدقائق']].concat(allSegs().sort((a,b)=>a.s-b.s).map(x=>[dkey(x.s),hm(x.s),hm(x.e),x.t,x.tag,((x.e-x.s)/M).toFixed(1)]));dl('سجل-المهام-'+dkey(Date.now())+'.csv','\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n'),'text/csv')};
+$('bak').onclick=()=>dl('مهام-نسخة-'+dkey(Date.now())+'.json',JSON.stringify(S),'application/json');
+$('imp').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(tx=>{const d=JSON.parse(tx);if(!d||!Array.isArray(d.tasks))throw 0;const prev=JSON.stringify(S);S=d;commit();toast('اترجعت النسخة',()=>{S=JSON.parse(prev);commit()})}).catch(()=>toast('الملف ده مش نسخة صحيحة',null));e.target.value=''};
+let ctx=null;
+function beepInit(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;ctx=ctx||new A();const r=ctx.resume&&ctx.resume();r&&r.catch&&r.catch(()=>{})}catch(e){ctx=null}}
+function beep(){if(!ctx)return;try{[0,.25,.5].forEach(d=>{const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=880;g.gain.setValueAtTime(.0001,ctx.currentTime+d);g.gain.exponentialRampToValueAtTime(.3,ctx.currentTime+d+.02);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+d+.2);o.connect(g).connect(ctx.destination);o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+.22)})}catch(e){}}
+function tick(){
+ const a=get(S.active);
+ if(a){const ms=el(a),est=a.est*M,over=est&&ms>est;
+  $('clock').textContent=fmt(ms);
+  $('clocksub').textContent=est?(over?'زيادة '+fmt(ms-est):'باقي '+fmt(est-ms)):'من غير تقدير';
+  $('ring').style.strokeDashoffset=est?C*(1-Math.min(1,ms/est)):C*(1-(ms/M%60)/60);
+  $('ring').classList.toggle('over',!!over);
+  if(a.run&&over&&!a.alerted){a.alerted=true;beep();save()}
+ }else{$('clock').textContent='00:00';$('clocksub').textContent='اختار مهمة';$('ring').style.strokeDashoffset=C}
+ for(const t of S.tasks){const n=document.querySelector(`[data-tm="${t.id}"]`);if(n&&(t.run||t.id===S.active)){const ms=el(t),est=t.est*M;n.textContent=fmt(ms);n.classList.toggle('over',!!(est&&ms>est));const b=document.querySelector(`[data-bar="${t.id}"]`);if(b){b.style.width=Math.min(100,ms/est*100)+'%';b.classList.toggle('over',ms>est)}}}
+ const tot=S.tasks.reduce((s,t)=>s+el(t),0),dn=S.tasks.filter(t=>t.done).length,left=S.tasks.filter(t=>!t.done).reduce((s,t)=>s+Math.max(0,t.est*M-el(t)),0)/M;
+ $('sFocus').textContent=fmt(tot).replace(/^00:/,'0:');$('sDone').textContent=dn+'/'+S.tasks.length;$('sLeft').textContent=fmtM(Math.round(left));
+ $('dayBar').style.width=(S.tasks.length?dn/S.tasks.length*100:0)+'%';
+ if(filter==='log'&&running()&&Date.now()%5000<1000)renderLog();
+ const rr=running();document.title=rr?fmt(el(rr))+' · '+rr.t.slice(0,24):'مهام بالتايمر';
+}
+$('date').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
+render();
+setInterval(tick,1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+window.__ok=true;
+}
+</script>
+</body>
+</html>
